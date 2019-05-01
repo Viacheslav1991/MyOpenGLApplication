@@ -12,6 +12,9 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_LINES;
+import static android.opengl.GLES20.GL_LINE_STRIP;
+import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.glBlendColor;
@@ -24,6 +27,7 @@ import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glLineWidth;
 import static android.opengl.GLES20.glUniform4f;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
@@ -58,7 +62,33 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     }
 
     private void prepareData() {
-        float[] vertices = {-0.5f, -0.2f, 0.0f, 0.2f, 0.5f, -0.2f,};
+        float[] vertices = {
+// треугольник 1
+                -0.9f, 0.8f, -0.9f, 0.2f, -0.5f, 0.8f,
+
+                // треугольник 2
+                -0.6f, 0.2f, -0.2f, 0.2f, -0.2f, 0.8f,
+
+                // треугольник 3
+                0.1f, 0.8f, 0.1f, 0.2f, 0.5f, 0.8f,
+
+                // треугольник 4
+                0.1f, 0.2f, 0.5f, 0.2f, 0.5f, 0.8f,
+
+                // линия 1
+                -0.7f, -0.1f, 0.7f, -0.1f,
+
+                // линия 2
+                -0.6f, -0.2f, 0.6f, -0.2f,
+
+                // точка 1
+                -0.5f, -0.3f,
+
+                // точка 2
+                0.0f, -0.3f,
+
+                // точка 3
+                0.5f, -0.3f,         };
         vertexData = ByteBuffer.allocateDirect(vertices.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         vertexData.put(vertices);
     }
@@ -75,7 +105,9 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 arg0) {
         glClear(GL_COLOR_BUFFER_BIT);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
+        glLineWidth(15);
+        glDrawArrays(GL_TRIANGLES, 0, 12);
+        glDrawArrays(GL_LINES, 12, 4);
+        glDrawArrays(GL_POINTS, 16, 3);
     }
 }

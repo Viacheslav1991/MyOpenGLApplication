@@ -3,6 +3,7 @@ package com.bignerdranch.android.myopenglapplication;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -13,6 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_LINES;
+import static android.opengl.GLES20.GL_LINE_LOOP;
 import static android.opengl.GLES20.GL_LINE_STRIP;
 import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.GL_TRIANGLES;
@@ -38,7 +40,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private Context context;
     private int programId;
     private FloatBuffer vertexData;
-    private int uColorLocation;
+    private int aColorLocation;
     private int aPositionLocation;
 
     public MyRenderer(Context context) {
@@ -63,51 +65,33 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
     private void prepareData() {
         float[] vertices = {
-// треугольник 1
-                -0.9f, 0.8f, -0.9f, 0.2f, -0.5f, 0.8f,
-
-                // треугольник 2
-                -0.6f, 0.2f, -0.2f, 0.2f, -0.2f, 0.8f,
-
-                // треугольник 3
-                0.1f, 0.8f, 0.1f, 0.2f, 0.5f, 0.8f,
-
-                // треугольник 4
-                0.1f, 0.2f, 0.5f, 0.2f, 0.5f, 0.8f,
-
-                // линия 1
-                -0.7f, -0.1f, 0.7f, -0.1f,
-
-                // линия 2
-                -0.6f, -0.2f, 0.6f, -0.2f,
-
-                // точка 1
-                -0.5f, -0.3f,
-
-                // точка 2
-                0.0f, -0.3f,
-
-                // точка 3
-                0.5f, -0.3f,         };
+                -0.5f, -0.2f, 1.0f, 0.0f, 0.0f,
+                0.0f, 0.2f, 0.0f, 1.0f, 0.0f,
+                0.5f, -0.2f, 0.0f, 0.0f, 1.0f,
+        };
         vertexData = ByteBuffer.allocateDirect(vertices.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         vertexData.put(vertices);
     }
 
     private void bindData() {
-        uColorLocation = glGetUniformLocation(programId, "u_Color");
-        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+        // coordinates
         aPositionLocation = glGetAttribLocation(programId, "a_Position");
         vertexData.position(0);
-        glVertexAttribPointer(aPositionLocation, 2, GL_FLOAT, false, 0, vertexData);
+        glVertexAttribPointer(aPositionLocation, 2, GL_FLOAT, false, 20, vertexData);
         glEnableVertexAttribArray(aPositionLocation);
+        // color
+        aColorLocation = glGetAttribLocation(programId, "a_Color");
+        vertexData.position(2);
+        glVertexAttribPointer(aColorLocation, 3, GL_FLOAT, false, 20, vertexData);
+        glEnableVertexAttribArray(aColorLocation);
+
     }
 
     @Override
     public void onDrawFrame(GL10 arg0) {
         glClear(GL_COLOR_BUFFER_BIT);
-        glLineWidth(15);
-        glDrawArrays(GL_TRIANGLES, 0, 12);
-        glDrawArrays(GL_LINES, 12, 4);
-        glDrawArrays(GL_POINTS, 16, 3);
+        glLineWidth(25);
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 }
